@@ -1,4 +1,4 @@
-# AI Loan Analysis Application
+# AI LOAN ANALYSIS APPLICATIION
 ## Secure ai driven loan analysis management application
 
 
