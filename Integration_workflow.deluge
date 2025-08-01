@@ -1,0 +1,59 @@
+
+~~~
+if(input.Analysis == "Chatgpt")
+{
+	if(input.Chatgpt_Input != "")
+	{
+		try 
+		{
+			apiKey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+			fet = customers[ID == input.Customers1];
+			prompt = input.Chatgpt_Input + "with the customer details of name John, Pan number ABCDE1234A, DOB 01/01/1990, employment type of" + fet.Employment_Type + ",annual income" + fet.Annual_Income + "with a type of loan" + input.loan_type1 + ",Requested amount " + input.requested_amount + "for a tenure of " + input.tenure1 + "with a credit score of" + input.Credit_Score;
+			headers = Map();
+			headers.put("Authorization","Bearer " + apiKey);
+			headers.put("Content-Type","application/json");
+			message = Map();
+			message.put("role","user");
+			message.put("content",prompt);
+			messagesList = list();
+			messagesList.add(message);
+			body = Map();
+			body.put("model","gpt-3.5-turbo");
+			body.put("messages",messagesList);
+			body.put("max_tokens",1000);
+			body.put("temperature",0.7);
+			response = invokeurl
+			[
+				url :"https://api.openai.com/v1/chat/completions"
+				type :POST
+				parameters:body.toString()
+				headers:headers
+			];
+			if(response.get("choices") != null && response.get("choices").size() > 0)
+			{
+				chatResponse = response.get("choices").get(0).get("message").get("content");
+				chatResponse = chatResponse.replaceAll("John",fet.Full_Name.first_name);
+				chatResponse = chatResponse.replaceAll("ABCDE1234A",fet.pan_number1);
+				chatResponse = chatResponse.replaceAll("01/01/1990",fet.Date_of_Birth.tostring("dd/mm/yyyy"));
+				input.Evaluation_Comments = chatResponse;
+			}
+			else
+			{
+				input.Evaluation_Comments = "ChatGPT error: No response from server.";
+			}
+		}
+		catch (e)
+		{
+			input.Evaluation_Comments = "Exception occurred:\n" + e.toString();
+			info "ChatGPT API Error: " + e.toString();
+		}
+	}
+	else
+	{
+		alert "Please add Inquiry Details";
+	}
+	input.Analysis = null;
+}
+
+                      
+~~~
